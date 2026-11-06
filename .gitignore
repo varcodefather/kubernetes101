@@ -1,0 +1,21 @@
+# Local configuration and credentials
+.env
+.env.*
+!.env.example
+.aws/
+*.pem
+*.key
+# Editor and OS files
+*.swp
+*.swo
+.DS_Store
+# Production assets do not belong in demo repositories
+*.mp4
+*.wav
+*.mp3
+*.pt
+*.safetensors
+
+# Cluster credentials and temporary lab state
+*.kubeconfig
+.kube/
