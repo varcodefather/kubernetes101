@@ -1,6 +1,6 @@
 # kind 101 — first local Kubernetes cluster
 
-Create a small local cluster, run nginx, reach it in a browser, observe Pod replacement and repair a Service selector. Companion lesson for Back to Basics: first local Kubernetes cluster.
+Create a small local cluster, run nginx, reach it in a browser, observe Pod replacement and repair a Service selector. [Watch tutorial](https://www.youtube.com/watch?v=6t4tAyD1UxQ) — Back to Basics: first local Kubernetes cluster.
 
 Tested: kind 0.33.0, Kubernetes node 1.37.0, kubectl 1.37.1, Docker 29.9.2, Linux amd64 in a local VM. No cloud account required. Docker must be running; ports in this walkthrough refer to the machine where kubectl runs. Docker Desktop on macOS supplies a Linux environment.
 

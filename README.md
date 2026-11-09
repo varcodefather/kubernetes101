@@ -4,7 +4,7 @@ Kubernetes on a laptop first, then production. Each tutorial has its own folder 
 
 | Tutorial | Files | Video |
 | --- | --- | --- |
-| 01 — First cluster with kind: deploy, reach, replace and troubleshoot | [Walkthrough](01-first-cluster/README.md) | Coming next |
+| 01 — First cluster with kind: deploy, reach, replace and troubleshoot | [Walkthrough](01-first-cluster/README.md) | [Watch tutorial](https://www.youtube.com/watch?v=6t4tAyD1UxQ) |
 
 ```bash
 git clone https://github.com/varcodefather/kubernetes101.git
