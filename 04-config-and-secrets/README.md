@@ -94,6 +94,26 @@ kubectl port-forward --address 127.0.0.1 -n config101 service/config-app 8080:80
 
 The image remains `config-web:v1`. Reload the page: greeting and banner both show version two; the new dummy key succeeds and the old dummy key fails. A fresh forward avoids relying on a connection to the replaced Pod.
 
+## Delete the object while the process keeps running
+
+Stop the forward, then remove only the dummy Secret:
+
+```bash
+kubectl delete secret app-credentials -n config101
+kubectl port-forward --address 127.0.0.1 -n config101 service/config-app 8080:80
+```
+
+Reload the page and test `example-only-key-two`: it still returns `200 OK`. An unrelated key is rejected. The process already received its environment value, so deleting the Kubernetes object does not erase that value from the running application. Credential revocation requires an application-aware rotation/replacement workflow.
+
+Stop the forward and restore the required example object before any future Pod replacement:
+
+```bash
+kubectl apply -f secret.example.yaml
+kubectl get secret app-credentials -n config101
+```
+
+This deletion and restore were rehearsed against the actual local app; all keys are dummy examples.
+
 ## Cleanup
 
 Stop the forward, then delete only this named lab and image:
