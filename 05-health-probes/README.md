@@ -21,8 +21,10 @@ kubectl get pods -n probes101
 The initial Deployment has readiness and liveness checks, but no startup check. Its liveness failure budget is shorter than the simulated startup time. Inspect the restarts and probe events:
 
 ```sh
-kubectl describe pods -l app=health-app -n probes101
+kubectl describe pods -l app=health-app -n probes101 --show-events=true
 ```
+
+`--show-events=true` keeps probe Events visible when more than one Pod matches.
 
 Compare both Deployment files in Neovim. `deployment.yaml` adds a startup probe with a longer budget; the image and application code stay unchanged.
 
@@ -40,7 +42,7 @@ This version keeps startup and liveness correct but asks readiness to check `/mi
 kubectl apply -f deployment-wrong-ready-path.yaml
 kubectl rollout status deployment/health-app -n probes101 --timeout=25s
 kubectl get pods -n probes101
-kubectl describe pods -l app=health-app -n probes101
+kubectl describe pods -l app=health-app -n probes101 --show-events=true
 ```
 
 The timeout is expected. The new replica cannot become ready; its Events show a readiness response of `404`. The Deployment's existing healthy replicas remain available while this update is blocked. A container restart will not repair the incorrect path in its configuration.
