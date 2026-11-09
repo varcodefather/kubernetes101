@@ -1,6 +1,6 @@
 # kind 101 — first local Kubernetes cluster
 
-Create a small local cluster, run nginx, reach it in a browser, observe Pod replacement and repair a Service selector. Video in production.
+Create a small local cluster, run nginx, reach it in a browser, observe Pod replacement and repair a Service selector. Companion lesson for Back to Basics: first local Kubernetes cluster.
 
 Tested: kind 0.33.0, Kubernetes node 1.37.0, kubectl 1.37.1, Docker 29.9.2, Linux amd64 in a local VM. No cloud account required. Docker must be running; ports in this walkthrough refer to the machine where kubectl runs. Docker Desktop on macOS supplies a Linux environment.
 
@@ -15,10 +15,6 @@ export KUBECONFIG="$PWD/lab.kubeconfig"
 ```
 
 Set this only once the lab file exists and check `kubectl config current-context` before changes. Expected: `kind-basics`. Using dedicated file avoids merging this lesson into your normal kubeconfig. Close lab terminals when finished so their environment does not affect later work.
-
-## Rehearsal evidence
-
-Actual lab verified two ready replicas, real HTTP nginx response, deleted Pod replacement, no endpoints after wrong selector, two endpoints after repair, real HTTP recovery and named cluster cleanup. Browser cutaways remain required for video recording. First rehearsal's host-cache import hit a multi-platform image error, so this lesson lets Kubernetes pull nginx directly. No host Docker cache sharing is assumed.
 
 ## Walkthrough
 
@@ -132,7 +128,7 @@ Append to `deployment.yaml` in Neovim:
 
 **Save and read the whole file**
 
-Press Escape, then `:wq`, then Enter.
+Press Escape, then `:wq`, pause to read the command, then Enter. Review the saved file with `cat deployment.yaml`.
 
 **Apply the Deployment**
 
@@ -177,7 +173,7 @@ Append to `service.yaml` in Neovim:
 
 **Save the Service file**
 
-Press Escape, then `:wq`, then Enter.
+Press Escape, then `:wq`, pause to read the command, then Enter. Review the saved file with `cat deployment.yaml`.
 
 **Apply and inspect the Service**
 
@@ -259,7 +255,7 @@ kubectl get pods -n kind101 --show-labels
 
 ```bash
 kubectl describe service web -n kind101
-kubectl get endpointslices -n kind101 -l kubernetes.io/service-name=web -o yaml
+kubectl get endpointslices -n kind101 -l kubernetes.io/service-name=web
 ```
 
 Expected: Service selector wrong-label; EndpointSlice endpoint list empty or null after controller update.
