@@ -173,7 +173,7 @@ Append to `service.yaml` in Neovim:
 
 **Save the Service file**
 
-Press Escape, then `:wq`, pause to read the command, then Enter. Review the saved file with `cat deployment.yaml`.
+Press Escape, then `:wq`, pause to read the command, then Enter. Review the saved file with `cat service.yaml`.
 
 **Apply and inspect the Service**
 
