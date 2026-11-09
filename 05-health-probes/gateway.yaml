@@ -1,0 +1,58 @@
+# Forwarding to this gateway makes browser requests traverse the app Service.
+# A direct kubectl port-forward to health-app would select one Pod instead.
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: health-gateway
+  namespace: probes101
+data:
+  default.conf: |
+    server {
+      listen 8080;
+      location / {
+        proxy_pass http://health-app.probes101.svc.cluster.local;
+        proxy_http_version 1.0;
+        proxy_set_header Connection close;
+      }
+    }
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: health-gateway
+  namespace: probes101
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: health-gateway
+  template:
+    metadata:
+      labels:
+        app: health-gateway
+    spec:
+      containers:
+        - name: gateway
+          image: nginx:alpine
+          ports:
+            - containerPort: 8080
+          volumeMounts:
+            - name: config
+              mountPath: /etc/nginx/conf.d
+              readOnly: true
+      volumes:
+        - name: config
+          configMap:
+            name: health-gateway
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: health-gateway
+  namespace: probes101
+spec:
+  selector:
+    app: health-gateway
+  ports:
+    - port: 80
+      targetPort: 8080
