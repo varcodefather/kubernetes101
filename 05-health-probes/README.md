@@ -30,6 +30,32 @@ Compare both Deployment files in Neovim. `deployment.yaml` adds a startup probe 
 kubectl apply -f deployment.yaml
 kubectl rollout status deployment/health-app -n probes101 --timeout=180s
 kubectl get pods -n probes101
+```
+
+## Recognize a wrong probe path
+
+This version keeps startup and liveness correct but asks readiness to check `/missing`, which the app does not serve:
+
+```sh
+kubectl apply -f deployment-wrong-ready-path.yaml
+kubectl rollout status deployment/health-app -n probes101 --timeout=25s
+kubectl get pods -n probes101
+kubectl describe pods -l app=health-app -n probes101
+```
+
+The timeout is expected. The new replica cannot become ready; its Events show a readiness response of `404`. The Deployment's existing healthy replicas remain available while this update is blocked. A container restart will not repair the incorrect path in its configuration.
+
+Restore the known working template and wait for two ready app replicas:
+
+```sh
+kubectl apply -f deployment.yaml
+kubectl rollout status deployment/health-app -n probes101 --timeout=180s
+kubectl get pods -n probes101
+```
+
+## Reach the app through its Service
+
+```sh
 kubectl apply -f gateway.yaml
 kubectl rollout status deployment/health-gateway -n probes101 --timeout=180s
 kubectl port-forward --address 127.0.0.1 -n probes101 service/health-gateway 8080:80
