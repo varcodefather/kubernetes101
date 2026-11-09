@@ -84,3 +84,40 @@ docker image rm local-web:v1 local-web:v2
 ```
 
 References: [load images into kind](https://kind.sigs.k8s.io/docs/user/quick-start/#loading-an-image-into-your-cluster), [Docker build context and exclusions](https://docs.docker.com/build/concepts/context/#dockerignore-files), [Deployment rollbacks](https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#rolling-back-a-deployment).
+
+
+## Practice: forgot to load the image
+
+After the cleanup above, keep the source files. The source page still says Version 2, while the saved manifest names `local-web:v1`. This separate fresh-cluster exercise reproduces `ErrImageNeverPull`.
+
+```sh
+docker build -t local-web:practice .
+kind create cluster --name image-demo --image kindest/node:v1.36.4@sha256:099e049362a1526b2db71494e1947aae99bd16290d7c895f2b7ea312e3cbfaed --kubeconfig lab.kubeconfig --wait 180s
+kubectl create namespace image101
+```
+
+Open `deployment.yaml` in your editor, change `local-web:v1` to `local-web:practice`, and save. Keep `imagePullPolicy: Never`. Deliberately do not load the image yet.
+
+```sh
+kubectl apply -f deployment.yaml
+kubectl rollout status deployment/web -n image101 --timeout=10s
+kubectl get pods -n image101
+```
+
+The rollout timeout is expected. Pods show `ErrImageNeverPull`: the host has the image, but this fresh node does not, and the policy forbids a registry pull. Load the already-built tag into this cluster:
+
+```sh
+kind load docker-image local-web:practice --name image-demo
+kubectl rollout status deployment/web -n image101 --timeout=180s
+kubectl get pods -n image101
+```
+
+Both replicas become ready after Kubernetes retries startup. No new build or registry push was needed. Remove only the exercise cluster and tag:
+
+```sh
+kind delete cluster --name image-demo --kubeconfig lab.kubeconfig
+kind get clusters
+docker image rm local-web:practice
+```
+
+The practice manifest still names `local-web:practice`; restore it to `local-web:v1` if repeating the main walkthrough. This missing-load failure and recovery were rehearsed on an actual fresh kind node.

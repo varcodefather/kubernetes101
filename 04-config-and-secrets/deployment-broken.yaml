@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: config-app
+  namespace: config101
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: config-app
+  template:
+    metadata:
+      labels:
+        app: config-app
+    spec:
+      containers:
+        - name: web
+          image: config-web:v1
+          imagePullPolicy: Never
+          ports:
+            - containerPort: 8000
+          env:
+            - name: GREETING
+              valueFrom:
+                configMapKeyRef:
+                  name: app-settings
+                  key: GREETING
+            - name: API_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: app-credentials
+                  key: API_TOKEN_TYPO
+          volumeMounts:
+            - name: settings
+              mountPath: /config
+              readOnly: true
+      volumes:
+        - name: settings
+          configMap:
+            name: app-settings
+            items:
+              - key: banner.txt
+                path: banner.txt

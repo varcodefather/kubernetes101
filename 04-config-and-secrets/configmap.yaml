@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: app-settings
+  namespace: config101
+data:
+  GREETING: "Hello from version one"
+  banner.txt: "Banner version one"
