@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: frontend
+  namespace: network101
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: frontend
+  template:
+    metadata:
+      labels:
+        app: frontend
+    spec:
+      containers:
+        - name: web
+          image: network-web:v1
+          imagePullPolicy: Never
+          env:
+            - name: ROLE
+              value: frontend
+            - name: BACKEND_URL
+              value: http://backned
+          ports:
+            - name: http
+              containerPort: 8000
+          readinessProbe:
+            httpGet:
+              path: /healthz
+              port: http
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: frontend
+  namespace: network101
+spec:
+  selector:
+    app: frontend
+  ports:
+    - port: 80
+      targetPort: http

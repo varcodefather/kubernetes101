@@ -5,10 +5,12 @@ Kubernetes on a laptop first, then production. Each tutorial has its own folder 
 | Tutorial | Files | Video |
 | --- | --- | --- |
 | 01 — First cluster with kind: deploy, reach, replace and troubleshoot | [Walkthrough](01-first-cluster/README.md) | [Watch tutorial](https://www.youtube.com/watch?v=6t4tAyD1UxQ) |
-| 02 — Fix image pull errors and crashing containers | [Walkthrough](02-fix-broken-deployments/README.md) | Video in production |
-| 03 — Build a local image, deploy an update and roll back | [Walkthrough](03-local-image-to-kind/README.md) | Video in production |
-| 04 — ConfigMaps and Secrets: change settings without rebuilding | [Walkthrough](04-config-and-secrets/README.md) | Video in production |
-| 05 — Health probes: protect startup, route traffic and recover | [Walkthrough](05-health-probes/README.md) | Video in production |
+| 02 — Fix image pull errors and crashing containers | [Walkthrough](02-fix-broken-deployments/README.md) | [Watch tutorial](https://youtu.be/guICSNjHkY0) |
+| 03 — Build a local image, deploy an update and roll back | [Walkthrough](03-local-image-to-kind/README.md) | [Scheduled 11 Nov](https://youtu.be/59mZOjgQr6M) |
+| 04 — ConfigMaps and Secrets: change settings without rebuilding | [Walkthrough](04-config-and-secrets/README.md) | [Scheduled 12 Nov](https://youtu.be/Wph1HPzRVws) |
+| 05 — Health probes: protect startup, route traffic and recover | [Walkthrough](05-health-probes/README.md) | [Scheduled 13 Nov](https://youtu.be/CLhoLyJf84A) |
+
+| 06 — Service selectors, target ports and DNS: follow the request | [Walkthrough](06-service-dns-networking/README.md) | Video in production |
 
 ```bash
 git clone https://github.com/varcodefather/kubernetes101.git
