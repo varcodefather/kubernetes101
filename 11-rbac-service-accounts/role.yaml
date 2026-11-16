@@ -1,0 +1,10 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: read-lesson-config
+  namespace: rbac101
+rules:
+  - apiGroups: [""]
+    resources: ["configmaps"]
+    resourceNames: ["lesson-config"]
+    verbs: ["get"]

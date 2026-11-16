@@ -1,0 +1,42 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: rbac101
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: rbac-other
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: lesson-config
+  namespace: rbac101
+data:
+  message: Read exactly this named ConfigMap
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: unrelated-config
+  namespace: rbac101
+data:
+  message: Different ConfigMap in the same namespace
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: lesson-config
+  namespace: rbac-other
+data:
+  message: Same name in another namespace
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: demo-secret
+  namespace: rbac101
+type: Opaque
+stringData:
+  example: disposable-demo-value

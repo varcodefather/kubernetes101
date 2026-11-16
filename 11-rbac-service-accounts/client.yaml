@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: api-reader
+  namespace: rbac101
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: api-reader
+  template:
+    metadata:
+      labels:
+        app: api-reader
+    spec:
+      serviceAccountName: config-reader
+      automountServiceAccountToken: true
+      containers:
+        - name: web
+          image: rbac-reader:v1
+          imagePullPolicy: Never
+          env:
+            - name: POD_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+          ports:
+            - name: http
+              containerPort: 8000
+          readinessProbe:
+            httpGet:
+              path: /healthz
+              port: http
+          resources:
+            requests:
+              cpu: 50m
+              memory: 32Mi
+            limits:
+              cpu: 200m
+              memory: 96Mi
