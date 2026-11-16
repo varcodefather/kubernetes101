@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: memory-demo
+  namespace: resources101
+spec:
+  selector:
+    app: memory-demo
+  ports:
+    - port: 80
+      targetPort: http

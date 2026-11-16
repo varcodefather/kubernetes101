@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: memory-demo
+  namespace: resources101
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: memory-demo
+  template:
+    metadata:
+      labels:
+        app: memory-demo
+    spec:
+      containers:
+        - name: web
+          image: resources-web:v1
+          imagePullPolicy: Never
+          env:
+            - name: RESERVE_MIB
+              value: "128"
+          ports:
+            - name: http
+              containerPort: 8000
+          readinessProbe:
+            httpGet:
+              path: /healthz
+              port: http
+          resources:
+            requests:
+              cpu: 50m
+              memory: 160Mi
+            limits:
+              cpu: 200m
+              memory: 256Mi
