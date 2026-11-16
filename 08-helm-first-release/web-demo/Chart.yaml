@@ -1,0 +1,6 @@
+apiVersion: v2
+name: web-demo
+description: Small local Helm release used by varCodeFather
+type: application
+version: 0.1.0
+appVersion: "1.0"

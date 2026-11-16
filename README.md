@@ -11,6 +11,7 @@ Kubernetes on a laptop first, then production. Each tutorial has its own folder 
 | 05 — Health probes: protect startup, route traffic and recover | [Walkthrough](05-health-probes/README.md) | [Scheduled 13 Nov](https://youtu.be/CLhoLyJf84A) |
 | 06 — Service selectors, target ports and DNS: follow the request | [Walkthrough](06-service-dns-networking/README.md) | Video in production |
 | 07 — Persistent storage: replace Pods, fix claims and restore data | [Walkthrough](07-persistent-storage/README.md) | Video in production |
+| 08 — Install, inspect, upgrade and roll back with Helm | Video in production | [Walkthrough and files](08-helm-first-release/) |
 
 ```bash
 git clone https://github.com/varcodefather/kubernetes101.git
