@@ -1,0 +1,4 @@
+*.kubeconfig
+*backup*.json
+.git
+__pycache__
