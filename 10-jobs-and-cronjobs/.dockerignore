@@ -1,0 +1,4 @@
+.git
+*.yaml
+README.md
+lab.kubeconfig

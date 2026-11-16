@@ -1,0 +1,26 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: totals-once
+  namespace: jobs101
+spec:
+  backoffLimit: 2
+  activeDeadlineSeconds: 60
+  ttlSecondsAfterFinished: 300
+  template:
+    spec:
+      restartPolicy: Never
+      containers:
+        - name: totals
+          image: totals-job:v1
+          imagePullPolicy: Never
+          env:
+            - name: INPUT_VALUES
+              value: "12,18,30"
+          resources:
+            requests:
+              cpu: 20m
+              memory: 32Mi
+            limits:
+              cpu: 100m
+              memory: 64Mi

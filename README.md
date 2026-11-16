@@ -13,6 +13,7 @@ Kubernetes on a laptop first, then production. Each tutorial has its own folder 
 | 07 — Persistent storage: replace Pods, fix claims and restore data | [Walkthrough](07-persistent-storage/README.md) | Video in production |
 | 08 — Install, inspect, upgrade and roll back with Helm | Video in production | [Walkthrough and files](08-helm-first-release/) |
 | 09 — Requests, limits, Pending and OOMKilled | Video in production | [Walkthrough and files](09-resource-requests-limits/) |
+| 10 — One-off and scheduled Jobs | Video in production | [Walkthrough and files](10-jobs-and-cronjobs/) |
 
 ```bash
 git clone https://github.com/varcodefather/kubernetes101.git
