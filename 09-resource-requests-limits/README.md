@@ -4,6 +4,22 @@ Run a small web app that holds 128 MiB of memory. Break scheduling with an overs
 
 Requires Docker, kind and kubectl. Run commands from this folder. Use a disposable local cluster; the cleanup deletes that cluster. No cloud account is involved.
 
+## Type along from a clean starter
+
+The completed files in this folder run as-is. To write the demonstrated manifests yourself,
+copy `starter` into a **new** folder and keep the completed files as a reference.
+Run these commands from this repository lesson folder:
+
+```sh
+mkdir -p ~/tutorials
+mkdir ~/tutorials/kubernetes-resources
+cp -a starter/. ~/tutorials/kubernetes-resources/
+cd ~/tutorials/kubernetes-resources
+```
+
+Create the missing files in Neovim while following the video. The commands below
+use the completed manifests; run them after authoring those files.
+
 ## Start the working app
 
 Keep this lab's kubeconfig separate from your usual configuration. The cluster and image names below must be unused before starting.
@@ -42,6 +58,15 @@ kubectl rollout status deployment/memory-demo -n resources101 --timeout=120s
 
 ## Diagnose a memory limit
 
+Preview the live change before applying it:
+
+```sh
+kubectl diff -f small-memory-limit.yaml
+```
+
+The expected differences return exit status **1** without applying the file.
+An API error is a different failure to investigate before continuing.
+
 ```sh
 kubectl apply -f small-memory-limit.yaml
 kubectl get pods -n resources101
@@ -56,6 +81,15 @@ kubectl port-forward -n resources101 --address 127.0.0.1 service/memory-demo 180
 ```
 
 Reopen the page and check the 128 MiB result. Stop port-forward before cleanup.
+
+Check the saved repair agrees with the live Deployment:
+
+```sh
+kubectl diff -f deployment.yaml
+```
+
+Expect no output and exit status **0** after restoring the baseline. A repair
+made only in the cluster can be undone later by applying a stale local file.
 
 The default rolling update can retain the previous healthy Pod while the new Pod fails. A Pending or OOM-killed replacement does not imply that every existing replica is unavailable. This lesson demonstrates scheduling and memory termination; it does not measure CPU throttling.
 
