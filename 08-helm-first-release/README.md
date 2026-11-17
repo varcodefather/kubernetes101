@@ -7,6 +7,23 @@ Tested with Helm **4.3.0** against the pinned local kind node below.
 Requirements: Docker, kind, kubectl, Helm 4, editor and browser. This lesson
 creates only a disposable local cluster. The provided app needs no cloud account.
 
+## Type along from a clean starter
+
+The completed files in this folder run as-is. To write the demonstrated manifests yourself,
+copy `starter` into a **new** folder and keep the completed files as a reference.
+Run these commands from this repository lesson folder:
+
+```sh
+mkdir -p ~/tutorials
+mkdir ~/tutorials/helm-release
+cp -a starter/. ~/tutorials/helm-release/
+cd ~/tutorials/helm-release
+mkdir -p web-demo/templates
+```
+
+Create the missing files in Neovim while following the video. The commands below
+use the completed manifests; run them after authoring those files.
+
 ## Prepare the image and cluster
 
 Work in this folder:

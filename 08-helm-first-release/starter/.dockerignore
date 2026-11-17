@@ -1,0 +1,6 @@
+.git
+web-demo
+values.*.yaml
+README.md
+lab.kubeconfig
+rendered.yaml

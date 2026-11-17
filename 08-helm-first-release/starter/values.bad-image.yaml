@@ -1,0 +1,4 @@
+replicaCount: 2
+message: This rollout should fail
+image:
+  tag: not-loaded
