@@ -1,0 +1,11 @@
+spec:
+  containers:
+    - name: reader
+      image: docker.io/library/busybox:1.37.0
+      command:
+        - sh
+        - -c
+        - touch /logs/worker.log && tail -n +1 -f /logs/worker.log
+      volumeMounts:
+        - name: logs
+          mountPath: /logs

@@ -15,6 +15,7 @@ Kubernetes on a laptop first, then production. Each tutorial has its own folder 
 | 09 — Requests, limits, Pending and OOMKilled | [Walkthrough and files](09-resource-requests-limits/) | Video in production |
 | 10 — One-off and scheduled Jobs | [Walkthrough and files](10-jobs-and-cronjobs/) | Video in production |
 | 11 — Read one named ConfigMap with RBAC | [Walkthrough and files](11-rbac-service-accounts/) | Video in production |
+| 12 — CKA 2026 practice exam | [Walkthrough and files](12-cka-practice-exam/) | Video in production |
 
 ```bash
 git clone https://github.com/varcodefather/kubernetes101.git

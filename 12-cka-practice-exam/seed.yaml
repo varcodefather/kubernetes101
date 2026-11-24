@@ -1,0 +1,297 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: cka-lab
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: probe
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: cluster-notes
+  namespace: cka-lab
+data:
+  message: lab only
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: spare-notes
+  namespace: cka-lab
+data:
+  message: outside grant
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: site
+  namespace: cka-lab
+data:
+  index.html: 'CKA practice web
+
+    '
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: web
+  namespace: cka-lab
+spec:
+  replicas: 2
+  selector:
+    matchLabels: &id001
+      app: web
+  template:
+    metadata:
+      labels: *id001
+    spec:
+      containers:
+      - name: web
+        image: docker.io/library/nginx:alpine
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 80
+        env:
+        - name: RELEASE
+          value: base
+        volumeMounts:
+        - name: home
+          mountPath: /usr/share/nginx/html
+          readOnly: true
+        resources:
+          requests:
+            cpu: 50m
+            memory: 24Mi
+      volumes:
+      - name: home
+        configMap:
+          name: site
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: web-http
+  namespace: cka-lab
+spec:
+  selector:
+    app: web
+  ports:
+  - port: 80
+    targetPort: 80
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: legacy-web
+  namespace: cka-lab
+spec:
+  selector:
+    app: retired-web
+  ports:
+  - port: 80
+    targetPort: 80
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: policy-web
+  namespace: cka-lab
+spec:
+  replicas: 1
+  selector:
+    matchLabels: &id001
+      app: policy-web
+  template:
+    metadata:
+      labels: *id001
+    spec:
+      containers:
+      - name: nginx
+        image: docker.io/library/nginx:alpine
+        imagePullPolicy: IfNotPresent
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: policy-web
+  namespace: cka-lab
+spec:
+  selector:
+    app: policy-web
+  ports:
+  - port: 80
+    targetPort: 80
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: client
+  namespace: cka-lab
+  labels:
+    access: allowed
+spec:
+  containers:
+  - name: client
+    image: docker.io/library/busybox:1.37.0
+    imagePullPolicy: IfNotPresent
+    command:
+    - sleep
+    - '3600'
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: outsider
+  namespace: probe
+  labels:
+    access: denied
+spec:
+  containers:
+  - name: client
+    image: docker.io/library/busybox:1.37.0
+    imagePullPolicy: IfNotPresent
+    command:
+    - sleep
+    - '3600'
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: archive-pv
+spec:
+  capacity:
+    storage: 128Mi
+  accessModes:
+  - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: ''
+  hostPath:
+    path: /var/local/cka-practice/archive
+    type: DirectoryOrCreate
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: scratch-data
+  namespace: cka-lab
+spec:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 64Mi
+  storageClassName: standard
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: broken-worker
+  namespace: cka-lab
+spec:
+  replicas: 1
+  selector:
+    matchLabels: &id001
+      app: broken-worker
+  template:
+    metadata:
+      labels: *id001
+    spec:
+      containers:
+      - name: worker
+        image: docker.io/library/busybox:1.37.0
+        imagePullPolicy: IfNotPresent
+        command:
+        - sh
+        - -c
+        - if [ -z "$GREETING" ]; then echo "missing GREETING"; exit 1; fi; echo "$GREETING";
+          sleep 3600
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: oversized
+  namespace: cka-lab
+spec:
+  replicas: 1
+  selector:
+    matchLabels: &id001
+      app: oversized
+  template:
+    metadata:
+      labels: *id001
+    spec:
+      containers:
+      - name: worker
+        image: docker.io/library/busybox:1.37.0
+        imagePullPolicy: IfNotPresent
+        command:
+        - sleep
+        - '3600'
+        resources:
+          requests:
+            cpu: '1000'
+            memory: 32Mi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: wrong-probe
+  namespace: cka-lab
+spec:
+  replicas: 1
+  selector:
+    matchLabels: &id001
+      app: wrong-probe
+  template:
+    metadata:
+      labels: *id001
+    spec:
+      containers:
+      - name: nginx
+        image: docker.io/library/nginx:alpine
+        imagePullPolicy: IfNotPresent
+        readinessProbe:
+          httpGet:
+            path: /missing
+            port: 80
+          periodSeconds: 2
+          failureThreshold: 1
+---
+apiVersion: gateway.networking.k8s.io/v1
+kind: GatewayClass
+metadata:
+  name: practice-envoy
+spec:
+  controllerName: gateway.envoyproxy.io/gatewayclass-controller
+---
+apiVersion: gateway.envoyproxy.io/v1alpha1
+kind: EnvoyProxy
+metadata:
+  name: practice-proxy
+  namespace: cka-lab
+spec:
+  provider:
+    type: Kubernetes
+    kubernetes:
+      envoyService:
+        type: ClusterIP
+---
+apiVersion: gateway.networking.k8s.io/v1
+kind: Gateway
+metadata:
+  name: practice-gateway
+  namespace: cka-lab
+spec:
+  gatewayClassName: practice-envoy
+  infrastructure:
+    parametersRef:
+      group: gateway.envoyproxy.io
+      kind: EnvoyProxy
+      name: practice-proxy
+  listeners:
+  - name: http
+    protocol: HTTP
+    port: 80

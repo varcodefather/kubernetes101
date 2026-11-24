@@ -1,0 +1,21 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: log-reader
+  namespace: cka-lab
+spec:
+  containers:
+  - name: writer
+    image: docker.io/library/busybox:1.37.0
+    imagePullPolicy: IfNotPresent
+    command:
+    - sh
+    - -c
+    - echo cka-log-ready > /logs/worker.log; sleep 3600
+    volumeMounts:
+    - name: logs
+      mountPath: /logs
+  restartPolicy: Never
+  volumes:
+  - name: logs
+    emptyDir: {}

@@ -1,0 +1,51 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: compat-web
+  namespace: cka-lab
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: compat-web
+  template:
+    metadata:
+      labels:
+        app: compat-web
+    spec:
+      containers:
+        - name: nginx
+          image: docker.io/library/nginx:alpine
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8443
+          readinessProbe:
+            tcpSocket:
+              port: 8443
+            periodSeconds: 2
+          volumeMounts:
+            - name: config
+              mountPath: /etc/nginx/conf.d
+              readOnly: true
+            - name: tls
+              mountPath: /etc/nginx/tls
+              readOnly: true
+      volumes:
+        - name: config
+          configMap:
+            name: compat-config
+        - name: tls
+          secret:
+            secretName: compat-cert
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: compat-web
+  namespace: cka-lab
+spec:
+  selector:
+    app: compat-web
+  ports:
+    - port: 443
+      targetPort: 8443

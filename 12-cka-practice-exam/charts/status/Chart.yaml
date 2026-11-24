@@ -1,0 +1,4 @@
+apiVersion: v2
+name: status
+description: Local ConfigMap chart for the CKA practice lab
+version: 0.1.0
